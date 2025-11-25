@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates xml:space="preserve">
+    <t t-inherit="web.ListRenderer.Rows" t-inherit-mode="extension">
+            <xpath expr="//t[@t-if='!list.isGrouped']" position="before">
+                <t t-if="isShowModels">
+                <tr class="o_list_hello_row">
+                    <th t-if="hasSelectors"
+                        class="o_list_record_selector o_list_controller align-middle pe-1 cursor-pointer">
+                    </th>
+
+                    <t t-foreach="columns" t-as="column" t-key="column.id">
+
+                        <t t-set="type" t-value="column.fieldType"/>
+                        <t t-set="is_date" t-value="['date', 'datetime'].includes(type)"/>
+                        <t t-set="is_number" t-value="['float','integer','monetary'].includes(column.widget)"/>
+                        <t t-set="is_char" t-value="type == 'char'"/>
+                        <t t-set="is_m2o" t-value="type == 'many2one'"/>
+                        <t t-set="is_m2m" t-value="type == 'many2many'"/>
+                        <t t-set="is_selection" t-value="type == 'selection'"/>
+
+                        <th class="text-center p-1">
+
+                            <!-- DATE / DATETIME (2 Inputs) -->
+                            <t t-if="is_date">
+                                <div>
+                                    <input type="datetime-local"
+                                           class="form-control form-control-sm"
+                                           placeholder="Min"
+                                           data-range="min"
+                                           t-att-data-column="column.name"
+                                           t-on-change="onFilterInputChange"/>
+
+                                    <input type="datetime-local"
+                                           class="form-control form-control-sm"
+                                           placeholder="Max"
+                                           data-range="max"
+                                           t-att-data-column="column.name"
+                                           t-on-change="onFilterInputChange"/>
+                                </div>
+                            </t>
+
+                            <!-- NUMBER TYPE (2 inputs) -->
+                            <t t-elif="is_number">
+                                <div>
+                                    <input type="number"
+                                           class="form-control form-control-sm"
+                                           placeholder="Min"
+                                           data-range="min"
+                                           t-att-data-column="column.name"
+                                           t-on-change="onFilterInputChange"/>
+
+                                    <input type="number"
+                                           class="form-control form-control-sm"
+                                           placeholder="Max"
+                                           data-range="max"
+                                           t-att-data-column="column.name"
+                                           t-on-change="onFilterInputChange"/>
+                                </div>
+                            </t>
+
+                            <!-- SELECTION (Dropdown) -->
+                            <t t-elif="is_selection">
+                                <select class="form-control form-control-sm"
+                                        t-att-data-column="column.name"
+                                        t-on-change="onFilterInputChange">
+                                     <option value="">Select Status</option>
+                                    <t t-foreach="Object.entries(column.decorations)" t-as="dec" t-key="dec[0]">
+                                        <t t-set="expr" t-value="dec[1]"/>
+                                        <t t-set="value"
+                                           t-value="expr.substring(expr.indexOf(&quot;'&quot;) + 1, expr.lastIndexOf(&quot;'&quot;))"/>
+                                        <option t-att-value="value">
+                                            <t t-esc="value"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </t>
+
+
+                            <!-- MANY2ONE -->
+                            <t t-elif="is_m2o">
+                                <input type="text"
+                                       class="form-control form-control-sm"
+                                       placeholder="Search M2O"
+                                       t-att-data-column="column.name"
+                                       t-on-change="onFilterInputChange"/>
+                            </t>
+
+                            <!-- MANY2MANY -->
+                            <t t-elif="is_m2m">
+                                <input type="text"
+                                       class="form-control form-control-sm"
+                                       placeholder="Search M2M"
+                                       t-att-data-column="column.name"
+                                       t-on-change="onFilterInputChange"/>
+                            </t>
+
+                            <!-- CHAR / DEFAULT -->
+                            <t t-else="">
+                                <input type="text"
+                                       class="form-control form-control-sm"
+                                       placeholder="Enter Value"
+                                       t-att-data-column="column.name"
+                                       t-on-change="onFilterInputChange"/>
+                            </t>
+
+                        </th>
+                    </t>
+
+                </tr>
+            </t>
+        </xpath>
+       </t>
+</templates>
+
