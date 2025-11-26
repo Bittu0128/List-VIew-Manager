@@ -12,17 +12,19 @@
                     <t t-foreach="columns" t-as="column" t-key="column.id">
 
                         <t t-set="type" t-value="column.fieldType"/>
-                        <t t-set="is_date" t-value="['date', 'datetime'].includes(type)"/>
+                        <t t-set="is_datetime" t-value="type == 'datetime'"/>
+                        <t t-set="is_date" t-value="type == 'date'"/>
                         <t t-set="is_number" t-value="['float','integer','monetary'].includes(column.widget)"/>
                         <t t-set="is_char" t-value="type == 'char'"/>
                         <t t-set="is_m2o" t-value="type == 'many2one'"/>
                         <t t-set="is_m2m" t-value="type == 'many2many'"/>
+                        <t t-set="is_o2m" t-value="type == 'one2many'"/>
                         <t t-set="is_selection" t-value="type == 'selection'"/>
 
                         <th class="text-center p-1">
 
-                            <!-- DATE / DATETIME (2 Inputs) -->
-                            <t t-if="is_date">
+                            <!-- DATETIME (2 Inputs) -->
+                            <t t-if="is_datetime">
                                 <div>
                                     <input type="datetime-local"
                                            class="form-control form-control-sm"
@@ -32,6 +34,26 @@
                                            t-on-change="onFilterInputChange"/>
 
                                     <input type="datetime-local"
+                                           class="form-control form-control-sm"
+                                           placeholder="Max"
+                                           data-range="max"
+                                           t-att-data-column="column.name"
+                                           t-on-change="onFilterInputChange"/>
+                                </div>
+                            </t>
+
+
+                            <!-- DATE (2 Inputs) -->
+                            <t t-elif="is_date">
+                                <div>
+                                    <input type="date"
+                                           class="form-control form-control-sm"
+                                           placeholder="Min"
+                                           data-range="min"
+                                           t-att-data-column="column.name"
+                                           t-on-change="onFilterInputChange"/>
+
+                                    <input type="date"
                                            class="form-control form-control-sm"
                                            placeholder="Max"
                                            data-range="max"
@@ -84,6 +106,11 @@
                                        placeholder="Search M2O"
                                        t-att-data-column="column.name"
                                        t-on-change="onFilterInputChange"/>
+                            </t>
+
+                            <!-- OME2MANY -->
+                            <t t-elif="is_o2m">
+                                <span></span>
                             </t>
 
                             <!-- MANY2MANY -->
