@@ -26,14 +26,14 @@
                             <!-- DATETIME (2 Inputs) -->
                             <t t-if="is_datetime">
                                 <div>
-                                    <input type="datetime-local"
+                                    <input type="date"
                                            class="form-control form-control-sm"
                                            placeholder="Min"
                                            data-range="min"
                                            t-att-data-column="column.name"
                                            t-on-change="onFilterInputChange"/>
 
-                                    <input type="datetime-local"
+                                    <input type="date"
                                            class="form-control form-control-sm"
                                            placeholder="Max"
                                            data-range="max"
