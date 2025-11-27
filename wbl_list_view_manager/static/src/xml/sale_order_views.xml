@@ -81,23 +81,57 @@
                                 </div>
                             </t>
 
-                            <!-- SELECTION (Dropdown) -->
+                            <!--   SELECTION (Dropdown)  -->
                             <t t-elif="is_selection">
-                                <select class="form-control form-control-sm"
-                                        t-att-data-column="column.name"
-                                        t-on-change="onFilterInputChange">
-                                     <option value="">Select Status</option>
-                                    <t t-foreach="Object.entries(column.decorations)" t-as="dec" t-key="dec[0]">
-                                        <t t-set="expr" t-value="dec[1]"/>
-                                        <t t-set="value"
-                                           t-value="expr.substring(expr.indexOf(&quot;'&quot;) + 1, expr.lastIndexOf(&quot;'&quot;))"/>
-                                        <option t-att-value="value">
-                                            <t t-esc="value"/>
-                                        </option>
+                                <!-- FOR STATE (ORDER STATUS) <==>  SELECTION (Dropdown)  -->
+                                <t t-if="column.name == 'state'">
+                                    <t t-if="this.StateObj">
+                                        <select class="form-control form-control-sm"
+                                                t-att-data-column="column.name"
+                                                t-on-change="onFilterInputChange">
+                                            <option value="">Select Status</option>
+                                            <t t-foreach="Object.entries(this.StateObj)"
+                                               t-as="entry" t-key="entry[0]">
+                                                <option t-att-value="entry[1]">
+                                                    <t t-esc="entry[0]"/>
+                                                </option>
+                                            </t>
+                                        </select>
                                     </t>
-                                </select>
+                                </t>
+                                <!-- FOR STATE (INVOICE STATE) <==>  SELECTION (Dropdown)  -->
+                                <t t-elif="column.name == 'invoice_status'">
+                                    <t t-if="this.InvoiceStatusObj">
+                                        <select class="form-control form-control-sm"
+                                                t-att-data-column="column.name"
+                                                t-on-change="onFilterInputChange">
+                                            <option value="">Select Status</option>
+                                            <t t-foreach="Object.entries(this.InvoiceStatusObj)"
+                                               t-as="entry" t-key="entry[0]">
+                                                <option t-att-value="entry[1]">
+                                                    <t t-esc="entry[0]"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </t>
+                                </t>
+                                <!-- FOR STATE (DELIVERY STATE) <==>  SELECTION (Dropdown)  -->
+                                <t t-elif="column.name == 'delivery_status'">
+                                    <t t-if="this.DeliveryStatusObj">
+                                        <select class="form-control form-control-sm"
+                                                t-att-data-column="column.name"
+                                                t-on-change="onFilterInputChange">
+                                            <option value="">Select Status</option>
+                                            <t t-foreach="Object.entries(this.DeliveryStatusObj)"
+                                               t-as="entry" t-key="entry[0]">
+                                                <option t-att-value="entry[1]">
+                                                    <t t-esc="entry[0]"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </t>
+                                </t>
                             </t>
-
 
                             <!-- MANY2ONE -->
                             <t t-elif="is_m2o">
@@ -110,7 +144,11 @@
 
                             <!-- OME2MANY -->
                             <t t-elif="is_o2m">
-                                <span></span>
+                                <input type="text"
+                                       class="form-control form-control-sm"
+                                       placeholder="Search O2M"
+                                       t-att-data-column="column.name"
+                                       t-on-change="onFilterInputChange"/>
                             </t>
 
                             <!-- MANY2MANY -->

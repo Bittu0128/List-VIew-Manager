@@ -1,10 +1,34 @@
 /** @odoo-module **/
 import { ListRenderer } from "@web/views/list/list_renderer";
 import { patch } from "@web/core/utils/patch";
+import { Component, onMounted, useRef } from "@odoo/owl";
 
 patch(ListRenderer.prototype, {
-    super(){
+
+    setup(){
         super.setup();
+
+        this.StateObj = {
+            'Sales Order':'sale',
+            'Quotation':'draft',
+            'Quotation Sent':'sent',
+            'Cancelled' : 'cancel'
+            };
+
+        this.InvoiceStatusObj = {
+            'Nothing to Invoice':'no',
+            'To Invoice':'to invoice',
+            'Fully Invoiced':'invoiced',
+            'Upselling' : 'Upselling Opportunity'
+            };
+
+        this.DeliveryStatusObj = {
+            'Not Delivered':'pending',
+            'Started':'started',
+            'Partially Delivered':'partial',
+            'Fully Delivered' : 'full'
+            };
+
     },
 
     get isShowModels() {
@@ -40,6 +64,7 @@ patch(ListRenderer.prototype, {
         console.log("🔥 ACTIVE FILTERS:", this.filters);
 
         this.render(true);
+
     },
 
     getRowClass(record) {
@@ -52,10 +77,9 @@ patch(ListRenderer.prototype, {
 
             for (const col in this.filters) {
                 const filterVal = this.filters[col];
-                console.log("Checking column:", col, typeof col);
-                console.log("Filter value:", filterVal, typeof filterVal);
+//                console.log("Checking column:", col, typeof col);
+//                console.log("Filter value:", filterVal, typeof filterVal);
 
-                // Check if the column is a Many-to-One (M2O) field
                 if (record.data[col] && typeof record.data[col] === 'object') {
                     console.log("if condition called")
 
@@ -88,7 +112,6 @@ patch(ListRenderer.prototype, {
 
                     }
 
-//                    else if (col === 'date_order'){
                     else if (["date_order", "validity_date", "commitment_date", "expected_date"].includes(col)){
                         console.log("Date-Only Filter Applied (Normalized Native Date) for:", col);
 
@@ -158,11 +181,31 @@ patch(ListRenderer.prototype, {
                         }
                     }
 
+                    else if (col === 'activity_ids'){
+                        console.log("Direct Activity Summary Filter Applied for:", col);
+
+                        const recVal = record.data.activity_summary;
+                        const filterString = String(filterVal || '').toLowerCase().trim();
+
+                        console.log("Record Summary:", recVal, "| Filter String:", filterString);
+
+                        if (!filterString) {
+                            hide = false;
+                        } else {
+                            const summary = String(recVal || '').toLowerCase();
+
+                            if (!summary.includes(filterString)) {
+                                hide = true;
+                                console.log("Hidden: Activity Summary does not contain filter.");
+                            } else {
+                                hide = false;
+                                console.log("Visible: Activity Summary matches filter.");
+                            }
+                        }
+                    }
+
                     else {
-//                        console.log("record.data[col] is an object:", record.data[col]);
-
                         const recVal = record.data[col].display_name || record.data[col].id;
-
                         console.log("recVal for M2O field:", recVal);
 
                         if (recVal === false || recVal === undefined) {
@@ -176,7 +219,6 @@ patch(ListRenderer.prototype, {
 
                 }
 
-                // Handle other normal fields (text or number filter)
                 else if (typeof filterVal === "object") {
                     console.log("elsif condition")
                     const min = filterVal.min ? parseFloat(filterVal.min) : null;
@@ -186,6 +228,7 @@ patch(ListRenderer.prototype, {
                     if (min !== null && recVal < min) hide = true;
                     if (max !== null && recVal > max) hide = true;
                 }
+
                 else {
                     console.log("else condition")
                     const recVal = record.data[col];

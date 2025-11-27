@@ -30,6 +30,7 @@
         'web.assets_backend': [
             'wbl_list_view_manager/static/src/xml/sale_order_views.xml',
             'wbl_list_view_manager/static/src/js/sale_order.js',
+            'wbl_list_view_manager/static/src/js/inherit_pager.js',
             'wbl_list_view_manager/static/src/css/style.css',
         ],
     },
